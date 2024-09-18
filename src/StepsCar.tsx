@@ -37,8 +37,10 @@ export const FirstStepCar = ({
           </SwiperSlide>
         ))}
       </Swiper>
-      <img height={392} style={{ objectFit: 'cover' }} width="100%" src={imgCars[carOptions.indexOf(selectedOptionCar)]} />
-      <div className={appSt.container}>
+      <div className={appSt.imgCenter}>
+        <img height={392} style={{ objectFit: 'cover' }} width="100%" src={imgCars[carOptions.indexOf(selectedOptionCar)]} />
+      </div>
+      <div className={`${appSt.container} ${appSt.bottomFix}`}>
         <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
           Новые авто могут иметь партнерскую программу
         </Typography.Text>
@@ -112,8 +114,10 @@ export const SecondStepCar = ({
           </SwiperSlide>
         ))}
       </Swiper>
-      <img height={392} width="100%" style={{ objectFit: 'cover' }} src={imgCars[carOptions.indexOf(selectedOptionCar)]} />
-      <div className={appSt.container}>
+      <div className={appSt.imgCenter}>
+        <img height={392} width="100%" style={{ objectFit: 'cover' }} src={imgCars[carOptions.indexOf(selectedOptionCar)]} />
+      </div>
+      <div className={`${appSt.container} ${appSt.bottomFix}`}>
         <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
           от 100 000 ₽ до 12 000 000 ₽
         </Typography.Text>
@@ -123,6 +127,8 @@ export const SecondStepCar = ({
           size={48}
           value={sum.toLocaleString('ru')}
           onChange={handleSumChange}
+          pattern="[0-9]*"
+          inputMode="numeric"
           rightAddons={
             <Typography.Text view="component-secondary" color="secondary">
               ₽
@@ -146,59 +152,63 @@ export const ThirdStepCar = ({
   setChecked2: (c: boolean) => void;
 }) => {
   return (
-    <div className={appSt.container}>
-      <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
-        Доп. услуги
-      </Typography.Title>
-      <div style={{ height: '294px' }} />
-      <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-        Дополнительные услуги уменьшат платеж
-      </Typography.Text>
-      <div className={appSt.row}>
-        <Switch
-          block
-          reversed
-          checked={checked}
-          label="Страховка"
-          className={appSt.switchItem}
-          onChange={() => setChecked(!checked)}
-        />
+    <>
+      <div className={appSt.container}>
+        <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
+          Доп. услуги
+        </Typography.Title>
+        <div style={{ height: '294px' }} />
       </div>
-      <div className={appSt.row}>
-        <Switch
-          block
-          reversed
-          checked={checked2}
-          label="Выгодная ставка"
-          className={appSt.switchItem}
-          onChange={() => setChecked2(!checked2)}
-        />
-      </div>
-      <div className={appSt.moneyBox}>
-        {checked2 ? (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-              25 000 ₽
-            </Typography.Text>
-            <s>
-              <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
+      <div className={`${appSt.container} ${appSt.bottomFix}`}>
+        <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
+          Дополнительные услуги уменьшат платеж
+        </Typography.Text>
+        <div className={appSt.row}>
+          <Switch
+            block
+            reversed
+            checked={checked}
+            label="Страховка"
+            className={appSt.switchItem}
+            onChange={() => setChecked(!checked)}
+          />
+        </div>
+        <div className={appSt.row}>
+          <Switch
+            block
+            reversed
+            checked={checked2}
+            label="Выгодная ставка"
+            className={appSt.switchItem}
+            onChange={() => setChecked2(!checked2)}
+          />
+        </div>
+        <div className={appSt.moneyBox}>
+          {checked2 ? (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
+                25 000 ₽
+              </Typography.Text>
+              <s>
+                <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
+                  27 000 ₽
+                </Typography.Text>
+              </s>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
                 27 000 ₽
               </Typography.Text>
-            </s>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-              27 000 ₽
-            </Typography.Text>
-            <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-              Без доп. услуг
-            </Typography.Text>
-          </div>
-        )}
-        <Typography.Text view="primary-medium">платеж в месяц</Typography.Text>
+              <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
+                Без доп. услуг
+              </Typography.Text>
+            </div>
+          )}
+          <Typography.Text view="primary-medium">платеж в месяц</Typography.Text>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -224,8 +234,10 @@ export const FourthStepCar = ({
           Кредит наличными
         </Typography.Title>
       </div>
-      <img height={392} width="100%" style={{ objectFit: 'cover' }} src={imgCars[carOptions.indexOf(selectedOptionCar)]} />
-      <div className={appSt.container}>
+      <div className={appSt.imgCenter}>
+        <img height={392} width="100%" style={{ objectFit: 'cover' }} src={imgCars[carOptions.indexOf(selectedOptionCar)]} />
+      </div>
+      <div className={`${appSt.container} ${appSt.bottomFix}`}>
         <div className={appSt.tags}>
           <div className={appSt.tag}>{selectedOptionCar}</div>
           <div className={appSt.tag}>{carState}</div>

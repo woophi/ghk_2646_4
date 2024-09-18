@@ -10,6 +10,15 @@ const bottomBtn = style({
   display: 'flex',
   alignItems: 'center',
   gap: '12px',
+  backgroundColor: '#fff',
+});
+
+const bottomFix = style({
+  position: 'fixed',
+  zIndex: 2,
+  bottom: 92,
+  width: '100%',
+  padding: '12px !important',
 });
 
 const container = style({
@@ -170,6 +179,13 @@ const tag = style({
   textAlign: 'center',
 });
 
+const imgCenter = style({
+  height: ' calc(100vh - 68px - 280px)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+});
+
 export const appSt = {
   bottomBtn,
   container,
@@ -188,4 +204,6 @@ export const appSt = {
   moneyBox,
   tag,
   tags,
+  bottomFix,
+  imgCenter,
 };
