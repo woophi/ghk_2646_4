@@ -1,29 +1,25 @@
 import { ButtonMobile } from '@alfalab/core-components/button/mobile';
 import { CDNIcon } from '@alfalab/core-components/cdn-icon';
 import { Gap } from '@alfalab/core-components/gap';
-import { Input, InputProps } from '@alfalab/core-components/input';
-import { Switch } from '@alfalab/core-components/switch';
+import { InputProps } from '@alfalab/core-components/input';
 import { Typography } from '@alfalab/core-components/typography';
-import { useCallback, useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import mebel from './assets/mebel.svg';
-import remont from './assets/remont.svg';
-import technika from './assets/technika.svg';
+import { useCallback, useEffect, useState } from 'react';
+import { carOptions, options } from './constants';
 import { LS, LSKeys } from './ls';
+import { FirstStepCar, FourthStepCar, SecondStepCar, SecondStepCarType, ThirdStepCar } from './StepsCar';
+import { FifthStepCash, FirstStepCash, FourthStepCash, SecondStepCashDeposit, ThridStepCash } from './StepsCash';
 import { appSt } from './style.css';
 import { ThxLayout } from './thx/ThxLayout';
-import { getYearString } from './utils/years';
 import { ZeroStep } from './ZeroStep';
 
-const years = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-
-const options = ['Ремонт', 'Мебель', 'Техника', 'Наличные'];
-const imgs = [remont, mebel, technika, 'Наличные'];
-
 export const App = () => {
+  const [selectedOptionCar, setOptionCar] = useState<string>(carOptions[0]);
+  const [carState, setCarState] = useState<'Подержанный' | 'Новый'>('Подержанный');
+  const [carType, setCarType] = useState<string>('');
+
   const [steps, setStep] = useState(0);
   const [flow, setFlow] = useState<'car_credit' | 'cash_credit'>('car_credit');
-  const [selectedOption, setOption] = useState<string>('Ремонт');
+  const [selectedOption, setOption] = useState<string>(options[0]);
   const [deposit, setDeposit] = useState<'Без залога' | 'Под залог'>('Без залога');
   const [depositOption, setDepositOption] = useState<'Автомобиль' | 'Квартира' | ''>('');
   const [sum, setSum] = useState(2_500_000);
@@ -33,6 +29,34 @@ export const App = () => {
   const [selectedYear, setYear] = useState(1);
   const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
 
+  useEffect(() => {
+    setOptionCar(carOptions[0]);
+    setCarState('Подержанный');
+    setCarType('');
+
+    setOption(options[0]);
+    setDeposit('Без залога');
+    setDepositOption('');
+    setSum(2_500_000);
+    setChecked(false);
+    setChecked2(false);
+    setYear(1);
+  }, [flow]);
+
+  const disabledNextStep =
+    flow === 'cash_credit'
+      ? steps === 2 && !depositOption && deposit === 'Под залог'
+      : steps === 2 && !carType && carState === 'Новый';
+
+  const titleBtn =
+    deposit === 'Под залог' || carState === 'Новый'
+      ? steps === 5
+        ? 'Продолжить'
+        : 'Следущий шаг'
+      : steps === 4
+      ? 'Продолжить'
+      : 'Следущий шаг';
+
   const handleSumChange: InputProps['onChange'] = (_, { value }) => {
     setSum(typeof value === 'string' ? Number(value.replace(/\s+/g, '')) : value);
   };
@@ -41,9 +65,20 @@ export const App = () => {
     setStep(v => v - 1);
   };
   const goNext = () => {
-    if ((steps === 4 && deposit === 'Без залога') || (steps === 5 && deposit === 'Под залог')) {
-      submit();
-      return;
+    switch (flow) {
+      case 'cash_credit':
+        if ((steps === 4 && deposit === 'Без залога') || (steps === 5 && deposit === 'Под залог')) {
+          submit();
+          return;
+        }
+        break;
+
+      case 'car_credit':
+        if ((steps === 4 && carState === 'Подержанный') || (steps === 5 && carState === 'Новый')) {
+          submit();
+          return;
+        }
+        break;
     }
     setStep(v => v + 1);
   };
@@ -71,6 +106,76 @@ export const App = () => {
   const content = () => {
     if (flow === 'car_credit') {
       switch (steps) {
+        case 1: {
+          return (
+            <FirstStepCar
+              carState={carState}
+              selectedOptionCar={selectedOptionCar}
+              setCarState={setCarState}
+              setOptionCar={setOptionCar}
+            />
+          );
+        }
+
+        case 2: {
+          if (carState === 'Новый') {
+            return <SecondStepCarType carType={carType} setCarType={setCarType} />;
+          }
+          return (
+            <SecondStepCar
+              handleSumChange={handleSumChange}
+              selectedOptionCar={selectedOptionCar}
+              selectedYear={selectedYear}
+              setYear={setYear}
+              sum={sum}
+            />
+          );
+        }
+        case 3: {
+          if (carState === 'Новый') {
+            return (
+              <SecondStepCar
+                handleSumChange={handleSumChange}
+                selectedOptionCar={selectedOptionCar}
+                selectedYear={selectedYear}
+                setYear={setYear}
+                sum={sum}
+              />
+            );
+          }
+          return <ThirdStepCar checked={checked} checked2={checked2} setChecked={setChecked} setChecked2={setChecked2} />;
+        }
+
+        case 4: {
+          if (carState === 'Новый') {
+            return <ThirdStepCar checked={checked} checked2={checked2} setChecked={setChecked} setChecked2={setChecked2} />;
+          }
+          return (
+            <FourthStepCar
+              carState={carState}
+              checked={checked}
+              checked2={checked2}
+              selectedOptionCar={selectedOptionCar}
+              selectedYear={selectedYear}
+              sum={sum}
+            />
+          );
+        }
+        case 5: {
+          if (carState === 'Новый') {
+            return (
+              <FourthStepCar
+                carState={carState}
+                checked={checked}
+                checked2={checked2}
+                selectedOptionCar={selectedOptionCar}
+                selectedYear={selectedYear}
+                sum={sum}
+              />
+            );
+          }
+          return null;
+        }
         default:
           return null;
       }
@@ -184,17 +289,17 @@ export const App = () => {
           block
           view="primary"
           className={appSt.btn}
-          disabled={steps === 2 && !depositOption && deposit === 'Под залог'}
+          disabled={disabledNextStep}
           onClick={goNext}
           loading={loading}
         >
           <div className={appSt.btnContainer}>
             <div>
               <Typography.TitleResponsive font="system" tag="h2" view="xsmall" weight="bold">
-                {steps === 4 ? 'Продолжить' : 'Следущий шаг'}
+                {titleBtn}
               </Typography.TitleResponsive>
               <Typography.Text view="primary-medium" defaultMargins={false}>
-                {steps} из 4
+                {steps} из {deposit === 'Под залог' || carState === 'Новый' ? 5 : 4}
               </Typography.Text>
             </div>
 
@@ -205,271 +310,5 @@ export const App = () => {
         </ButtonMobile>
       </div>
     </>
-  );
-};
-
-const FirstStepCash = ({
-  selectedOption,
-  setOption,
-  deposit,
-  setDeposit,
-}: {
-  setOption: (v: string) => void;
-  selectedOption: string;
-  deposit: 'Без залога' | 'Под залог';
-  setDeposit: (v: 'Без залога' | 'Под залог') => void;
-}) => {
-  return (
-    <>
-      <div className={appSt.container}>
-        <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
-          Кредит наличными
-        </Typography.Title>
-      </div>
-
-      <Swiper spaceBetween={8} style={{ marginLeft: '1rem' }} slidesPerView="auto">
-        {options.map(o => (
-          <SwiperSlide onClick={() => setOption(o)} className={appSt.swSlide({ selected: selectedOption === o })} key={o}>
-            {o}
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      <div className={appSt.container}>
-        <img height={392} width="100%" src={imgs[options.indexOf(selectedOption)]} />
-
-        <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-          Под залог ниже ставка, меньше платеж
-        </Typography.Text>
-
-        <div className={appSt.btnsRadio}>
-          <div className={appSt.btnRadio({ selected: deposit === 'Без залога' })} onClick={() => setDeposit('Без залога')}>
-            <Typography.Text style={{ fontWeight: 'inherit' }} view="primary-medium">
-              Без залога
-            </Typography.Text>
-          </div>
-          <div className={appSt.btnRadio({ selected: deposit === 'Под залог' })} onClick={() => setDeposit('Под залог')}>
-            <Typography.Text style={{ fontWeight: 'inherit' }} view="primary-medium">
-              Под залог
-            </Typography.Text>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-
-const SecondStepCashDeposit = ({
-  depositOption,
-  setDepositOption,
-}: {
-  setDepositOption: (v: 'Автомобиль' | 'Квартира' | '') => void;
-  depositOption: 'Автомобиль' | 'Квартира' | '';
-}) => {
-  return (
-    <div className={appSt.container}>
-      <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
-        Залог
-      </Typography.Title>
-
-      <div
-        onClick={() => setDepositOption('Автомобиль')}
-        className={appSt.depositRow({ selected: depositOption === 'Автомобиль' })}
-      >
-        <Typography.Text view="primary-medium">Автомобиль</Typography.Text>
-        {depositOption === 'Автомобиль' && <CDNIcon name="glyph_checkmark-circle_m" color="#fff" />}
-      </div>
-      <div
-        onClick={() => setDepositOption('Квартира')}
-        className={appSt.depositRow({ selected: depositOption === 'Квартира' })}
-      >
-        <Typography.Text view="primary-medium">Квартира</Typography.Text>
-        {depositOption === 'Квартира' && <CDNIcon name="glyph_checkmark-circle_m" color="#fff" />}
-      </div>
-    </div>
-  );
-};
-
-const ThridStepCash = ({
-  handleSumChange,
-  selectedOption,
-  selectedYear,
-  setYear,
-  sum,
-}: {
-  selectedYear: number;
-  sum: number;
-  setYear: (v: number) => void;
-  selectedOption: string;
-  handleSumChange: InputProps['onChange'];
-}) => {
-  return (
-    <>
-      <div className={appSt.container}>
-        <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
-          Срок и сумма
-        </Typography.Title>
-      </div>
-
-      <Swiper spaceBetween={8} style={{ marginLeft: '1rem' }} slidesPerView="auto">
-        {years.map(year => (
-          <SwiperSlide
-            onClick={() => setYear(year)}
-            className={appSt.swSlide({ selected: selectedYear === year })}
-            key={year}
-          >
-            {getYearString(year)}
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      <div className={appSt.container}>
-        <img height={392} width="100%" src={imgs[options.indexOf(selectedOption)]} />
-
-        <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-          от 100 000 ₽ до 12 000 000 ₽
-        </Typography.Text>
-
-        <Input
-          block
-          size={48}
-          value={sum.toLocaleString('ru')}
-          onChange={handleSumChange}
-          rightAddons={
-            <Typography.Text view="component-secondary" color="secondary">
-              ₽
-            </Typography.Text>
-          }
-        />
-      </div>
-    </>
-  );
-};
-
-const FourthStepCash = ({
-  checked,
-  setChecked,
-  checked2,
-  setChecked2,
-}: {
-  checked: boolean;
-  setChecked: (c: boolean) => void;
-  checked2: boolean;
-  setChecked2: (c: boolean) => void;
-}) => {
-  return (
-    <div className={appSt.container}>
-      <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
-        Доп. услуги
-      </Typography.Title>
-      <div style={{ height: '294px' }} />
-      <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-        Дополнительные услуги уменьшат платеж
-      </Typography.Text>
-      <div className={appSt.row}>
-        <Switch
-          block
-          reversed
-          checked={checked}
-          label="Страховка"
-          className={appSt.switchItem}
-          onChange={() => setChecked(!checked)}
-        />
-      </div>
-      <div className={appSt.row}>
-        <Switch
-          block
-          reversed
-          checked={checked2}
-          label="Выгодная ставка"
-          className={appSt.switchItem}
-          onChange={() => setChecked2(!checked2)}
-        />
-      </div>
-      <div className={appSt.moneyBox}>
-        {checked2 ? (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-              25 000 ₽
-            </Typography.Text>
-            <s>
-              <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-                27 000 ₽
-              </Typography.Text>
-            </s>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-              27 000 ₽
-            </Typography.Text>
-            <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-              Без доп. услуг
-            </Typography.Text>
-          </div>
-        )}
-        <Typography.Text view="primary-medium">платеж в месяц</Typography.Text>
-      </div>
-    </div>
-  );
-};
-
-const FifthStepCash = ({
-  deposit,
-  depositOption,
-  selectedOption,
-  checked,
-  checked2,
-  selectedYear,
-  sum,
-}: {
-  selectedYear: number;
-  sum: number;
-  checked: boolean;
-  checked2: boolean;
-  selectedOption: string;
-  deposit: 'Без залога' | 'Под залог';
-  depositOption: 'Автомобиль' | 'Квартира' | '';
-}) => {
-  return (
-    <div className={appSt.container}>
-      <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
-        Кредит наличными
-      </Typography.Title>
-      <img height={392} width="100%" src={imgs[options.indexOf(selectedOption)]} />
-      <div className={appSt.tags}>
-        <div className={appSt.tag}>На {selectedOption === 'Техника' ? 'технику' : selectedOption.toLowerCase()}</div>
-        <div className={appSt.tag}>
-          {deposit}
-          {depositOption ? (depositOption === 'Автомобиль' ? ' автомобиля' : ' квартиры') : ''}
-        </div>
-        <div className={appSt.tag}>На {getYearString(selectedYear)}</div>
-        <div className={appSt.tag}>{sum.toLocaleString('ru')} ₽</div>
-        {checked && <div className={appSt.tag}>Страховка</div>}
-        {checked2 && <div className={appSt.tag}>Выгодная ставка</div>}
-      </div>
-      <div className={appSt.moneyBox}>
-        {checked2 ? (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-              25 000 ₽
-            </Typography.Text>
-            <s>
-              <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-                27 000 ₽
-              </Typography.Text>
-            </s>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-              27 000 ₽
-            </Typography.Text>
-            <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-              Без доп. услуг
-            </Typography.Text>
-          </div>
-        )}
-        <Typography.Text view="primary-medium">платеж в месяц</Typography.Text>
-      </div>
-    </div>
   );
 };
