@@ -3,13 +3,14 @@ import { CDNIcon } from '@alfalab/core-components/cdn-icon';
 import { Gap } from '@alfalab/core-components/gap';
 import { InputProps } from '@alfalab/core-components/input';
 import { Typography } from '@alfalab/core-components/typography';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { carOptions, options } from './constants';
 import { LS, LSKeys } from './ls';
 import { FirstStepCar, FourthStepCar, SecondStepCar, SecondStepCarType, ThirdStepCar } from './StepsCar';
 import { FifthStepCash, FirstStepCash, FourthStepCash, SecondStepCashDeposit, ThridStepCash } from './StepsCash';
 import { appSt } from './style.css';
 import { ThxLayout } from './thx/ThxLayout';
+import { sendDataToGA } from './utils/events';
 import { ZeroStep } from './ZeroStep';
 
 export const App = () => {
@@ -83,25 +84,28 @@ export const App = () => {
     setStep(v => v + 1);
   };
 
-  const submit = useCallback(() => {
-    // if (!accountNumber) {
-    //   setError('Укажите номер лицевого счёта');
-    //   return;
-    // }
+  const submit = () => {
     setLoading(true);
-    setThx(true);
-    setLoading(false);
 
-    // sendDataToGA({
-    //   autopayments: Number(checked) as 1 | 0,
-    //   limit: Number(checked2) as 1 | 0,
-    //   limit_sum: limit ?? 0,
-    //   insurance: Number(checked3) as 1 | 0,
-    //   email: email ? 1 : 0,
-    // }).then(() => {
-    //   LS.setItem(LSKeys.ShowThx, true);
-    // });
-  }, []);
+    const isCash = flow === 'cash_credit';
+
+    sendDataToGA({
+      credit_period: selectedYear,
+      credit_sum: sum,
+      is_good_rate: Number(checked2) as 1 | 0,
+      is_insurance: Number(checked) as 1 | 0,
+      auto_brand: carType,
+      auto_credit_goal: isCash ? '' : selectedOptionCar,
+      auto_type: isCash ? '' : carState,
+      cash_credit_goal: isCash ? selectedOption : '',
+      credit_type: isCash ? 'Кредит наличными' : 'Автокредит',
+      zalog_type: isCash ? depositOption : '0',
+    }).then(() => {
+      LS.setItem(LSKeys.ShowThx, true);
+      setThx(true);
+      setLoading(false);
+    });
+  };
 
   const content = () => {
     if (flow === 'car_credit') {
