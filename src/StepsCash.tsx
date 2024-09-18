@@ -33,9 +33,8 @@ export const FirstStepCash = ({
           </SwiperSlide>
         ))}
       </Swiper>
+      <img height={392} width="100%" style={{ objectFit: 'cover' }} src={imgs[options.indexOf(selectedOption)]} />
       <div className={appSt.container}>
-        <img height={392} width="100%" src={imgs[options.indexOf(selectedOption)]} />
-
         <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
           Под залог ниже ставка, меньше платеж
         </Typography.Text>
@@ -120,9 +119,8 @@ export const ThridStepCash = ({
           </SwiperSlide>
         ))}
       </Swiper>
+      <img height={392} width="100%" style={{ objectFit: 'cover' }} src={imgs[options.indexOf(selectedOption)]} />
       <div className={appSt.container}>
-        <img height={392} width="100%" src={imgs[options.indexOf(selectedOption)]} />
-
         <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
           от 100 000 ₽ до 12 000 000 ₽
         </Typography.Text>
@@ -229,46 +227,50 @@ export const FifthStepCash = ({
   depositOption: 'Автомобиль' | 'Квартира' | '';
 }) => {
   return (
-    <div className={appSt.container}>
-      <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
-        Кредит наличными
-      </Typography.Title>
-      <img height={392} width="100%" src={imgs[options.indexOf(selectedOption)]} />
-      <div className={appSt.tags}>
-        <div className={appSt.tag}>На {selectedOption === 'Техника' ? 'технику' : selectedOption.toLowerCase()}</div>
-        <div className={appSt.tag}>
-          {deposit}
-          {depositOption ? (depositOption === 'Автомобиль' ? ' автомобиля' : ' квартиры') : ''}
-        </div>
-        <div className={appSt.tag}>На {getYearString(selectedYear)}</div>
-        <div className={appSt.tag}>{sum.toLocaleString('ru')} ₽</div>
-        {checked && <div className={appSt.tag}>Страховка</div>}
-        {checked2 && <div className={appSt.tag}>Выгодная ставка</div>}
+    <>
+      <div className={appSt.container}>
+        <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
+          Кредит наличными
+        </Typography.Title>
       </div>
-      <div className={appSt.moneyBox}>
-        {checked2 ? (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-              25 000 ₽
-            </Typography.Text>
-            <s>
-              <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
+      <img height={392} width="100%" style={{ objectFit: 'cover' }} src={imgs[options.indexOf(selectedOption)]} />
+      <div className={appSt.container}>
+        <div className={appSt.tags}>
+          <div className={appSt.tag}>На {selectedOption === 'Техника' ? 'технику' : selectedOption.toLowerCase()}</div>
+          <div className={appSt.tag}>
+            {deposit}
+            {depositOption ? (depositOption === 'Автомобиль' ? ' автомобиля' : ' квартиры') : ''}
+          </div>
+          <div className={appSt.tag}>На {getYearString(selectedYear)}</div>
+          <div className={appSt.tag}>{sum.toLocaleString('ru')} ₽</div>
+          {checked && <div className={appSt.tag}>Страховка</div>}
+          {checked2 && <div className={appSt.tag}>Выгодная ставка</div>}
+        </div>
+        <div className={appSt.moneyBox}>
+          {checked2 ? (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
+                25 000 ₽
+              </Typography.Text>
+              <s>
+                <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
+                  27 000 ₽
+                </Typography.Text>
+              </s>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
                 27 000 ₽
               </Typography.Text>
-            </s>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-              27 000 ₽
-            </Typography.Text>
-            <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-              Без доп. услуг
-            </Typography.Text>
-          </div>
-        )}
-        <Typography.Text view="primary-medium">платеж в месяц</Typography.Text>
+              <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
+                Без доп. услуг
+              </Typography.Text>
+            </div>
+          )}
+          <Typography.Text view="primary-medium">платеж в месяц</Typography.Text>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
