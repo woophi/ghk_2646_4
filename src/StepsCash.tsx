@@ -21,7 +21,7 @@ export const FirstStepCash = ({
   return (
     <>
       <div className={appSt.container}>
-        <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
+        <Typography.Title style={{ textAlign: 'center', zIndex: 2 }} tag="h1" view="medium" font="system" weight="bold">
           Кредит наличными
         </Typography.Title>
       </div>
@@ -105,7 +105,7 @@ export const ThridStepCash = ({
   return (
     <>
       <div className={appSt.container}>
-        <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
+        <Typography.Title style={{ textAlign: 'center', zIndex: 2 }} tag="h1" view="medium" font="system" weight="bold">
           Срок и сумма
         </Typography.Title>
       </div>
@@ -239,7 +239,7 @@ export const FifthStepCash = ({
   return (
     <>
       <div className={appSt.container}>
-        <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
+        <Typography.Title style={{ textAlign: 'center', zIndex: 2 }} tag="h1" view="medium" font="system" weight="bold">
           Кредит наличными
         </Typography.Title>
       </div>
