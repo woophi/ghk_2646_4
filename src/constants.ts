@@ -4,13 +4,14 @@ import car_work from './assets/car_work.svg';
 import car_soul from './assets/cat_soul.svg';
 import mebel from './assets/mebel.svg';
 import remont from './assets/remont.svg';
+import tabletka from './assets/tabletka.svg';
 import technika from './assets/technika.svg';
 
 export const years = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export const options = ['Ремонт', 'Мебель', 'Техника', 'Наличные'];
 export const carOptions = ['Для работы', 'Для себя', 'Для семьи', 'Для души'];
-export const imgs = [remont, mebel, technika, 'Наличные'];
+export const imgs = [remont, mebel, technika, tabletka];
 export const imgCars = [car_work, car_self, car_family, car_soul];
 
 export const carTypes = [
