@@ -88,13 +88,21 @@ export const SecondStepCar = ({
   selectedYear,
   setYear,
   sum,
+  setSum,
 }: {
   selectedYear: number;
   sum: number;
   setYear: (v: number) => void;
+  setSum: (v: number) => void;
   selectedOptionCar: string;
   handleSumChange: InputProps['onChange'];
 }) => {
+  const min = 300_000;
+  const max = 800_000;
+
+  const handleBlur = () => {
+    setSum(Math.max(min, Math.min(max, sum)));
+  };
   return (
     <>
       <div className={appSt.container}>
@@ -119,7 +127,7 @@ export const SecondStepCar = ({
       </div>
       <div className={`${appSt.container} ${appSt.bottomFix}`}>
         <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-          от 100 000 ₽ до 12 000 000 ₽
+          от {min.toLocaleString('ru')} ₽ до {max.toLocaleString('ru')} ₽
         </Typography.Text>
 
         <Input
@@ -127,6 +135,7 @@ export const SecondStepCar = ({
           size={48}
           value={sum.toLocaleString('ru')}
           onChange={handleSumChange}
+          onBlur={handleBlur}
           pattern="[0-9]*"
           inputMode="numeric"
           rightAddons={
@@ -143,13 +152,11 @@ export const SecondStepCar = ({
 export const ThirdStepCar = ({
   checked,
   setChecked,
-  checked2,
-  setChecked2,
+  monthPayment,
 }: {
   checked: boolean;
   setChecked: (c: boolean) => void;
-  checked2: boolean;
-  setChecked2: (c: boolean) => void;
+  monthPayment: number;
 }) => {
   return (
     <>
@@ -173,38 +180,15 @@ export const ThirdStepCar = ({
             onChange={() => setChecked(!checked)}
           />
         </div>
-        <div className={appSt.row}>
-          <Switch
-            block
-            reversed
-            checked={checked2}
-            label="Выгодная ставка"
-            className={appSt.switchItem}
-            onChange={() => setChecked2(!checked2)}
-          />
-        </div>
         <div className={appSt.moneyBox}>
-          {checked2 ? (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-                25 000 ₽
-              </Typography.Text>
-              <s>
-                <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-                  27 000 ₽
-                </Typography.Text>
-              </s>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-                27 000 ₽
-              </Typography.Text>
-              <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-                Без доп. услуг
-              </Typography.Text>
-            </div>
-          )}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
+              {monthPayment.toLocaleString('ru')} ₽
+            </Typography.Text>
+            <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
+              Без доп. услуг
+            </Typography.Text>
+          </div>
           <Typography.Text view="primary-medium">платеж в месяц</Typography.Text>
         </div>
       </div>
@@ -216,16 +200,16 @@ export const FourthStepCar = ({
   carState,
   selectedOptionCar,
   checked,
-  checked2,
   selectedYear,
   sum,
+  monthPayment,
 }: {
   selectedYear: number;
   sum: number;
   checked: boolean;
-  checked2: boolean;
   selectedOptionCar: string;
   carState: 'Подержанный' | 'Новый';
+  monthPayment: number;
 }) => {
   return (
     <>
@@ -244,30 +228,16 @@ export const FourthStepCar = ({
           <div className={appSt.tag}>На {getYearString(selectedYear)}</div>
           <div className={appSt.tag}>{sum.toLocaleString('ru')} ₽</div>
           {checked && <div className={appSt.tag}>Страховка</div>}
-          {checked2 && <div className={appSt.tag}>Выгодная ставка</div>}
         </div>
         <div className={appSt.moneyBox}>
-          {checked2 ? (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-                25 000 ₽
-              </Typography.Text>
-              <s>
-                <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-                  27 000 ₽
-                </Typography.Text>
-              </s>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-                27 000 ₽
-              </Typography.Text>
-              <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-                Без доп. услуг
-              </Typography.Text>
-            </div>
-          )}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
+              {monthPayment.toLocaleString('ru')} ₽
+            </Typography.Text>
+            <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
+              Без доп. услуг
+            </Typography.Text>
+          </div>
           <Typography.Text view="primary-medium">платеж в месяц</Typography.Text>
         </div>
       </div>

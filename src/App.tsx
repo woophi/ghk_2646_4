@@ -4,6 +4,7 @@ import { Gap } from '@alfalab/core-components/gap';
 import { InputProps } from '@alfalab/core-components/input';
 import { Typography } from '@alfalab/core-components/typography';
 import { useEffect, useState } from 'react';
+import { calculatePayment } from './calc';
 import { carOptions, options } from './constants';
 import { LS, LSKeys } from './ls';
 import { FirstStepCar, FourthStepCar, SecondStepCar, SecondStepCarType, ThirdStepCar } from './StepsCar';
@@ -23,10 +24,9 @@ export const App = () => {
   const [selectedOption, setOption] = useState<string>(options[0]);
   const [deposit, setDeposit] = useState<'Без залога' | 'Под залог'>('Без залога');
   const [depositOption, setDepositOption] = useState<'Автомобиль' | 'Квартира' | ''>('');
-  const [sum, setSum] = useState(2_500_000);
+  const [sum, setSum] = useState(500_000);
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [checked2, setChecked2] = useState(false);
   const [selectedYear, setYear] = useState(1);
   const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
 
@@ -38,10 +38,9 @@ export const App = () => {
     setOption(options[0]);
     setDeposit('Без залога');
     setDepositOption('');
-    setSum(2_500_000);
+    setSum(500_000);
     setChecked(false);
-    setChecked2(false);
-    setYear(1);
+    setYear(3);
   }, [flow]);
 
   const disabledNextStep =
@@ -92,7 +91,6 @@ export const App = () => {
     sendDataToGA({
       credit_period: selectedYear,
       credit_sum: sum,
-      is_good_rate: Number(checked2) as 1 | 0,
       is_insurance: Number(checked) as 1 | 0,
       auto_brand: carType,
       auto_credit_goal: isCash ? '' : selectedOptionCar,
@@ -132,6 +130,7 @@ export const App = () => {
               selectedYear={selectedYear}
               setYear={setYear}
               sum={sum}
+              setSum={setSum}
             />
           );
         }
@@ -144,24 +143,37 @@ export const App = () => {
                 selectedYear={selectedYear}
                 setYear={setYear}
                 sum={sum}
+                setSum={setSum}
               />
             );
           }
-          return <ThirdStepCar checked={checked} checked2={checked2} setChecked={setChecked} setChecked2={setChecked2} />;
+          return (
+            <ThirdStepCar
+              checked={checked}
+              setChecked={setChecked}
+              monthPayment={calculatePayment(sum, 0.29, selectedYear)}
+            />
+          );
         }
 
         case 4: {
           if (carState === 'Новый') {
-            return <ThirdStepCar checked={checked} checked2={checked2} setChecked={setChecked} setChecked2={setChecked2} />;
+            return (
+              <ThirdStepCar
+                checked={checked}
+                setChecked={setChecked}
+                monthPayment={calculatePayment(sum, 0.29, selectedYear)}
+              />
+            );
           }
           return (
             <FourthStepCar
               carState={carState}
               checked={checked}
-              checked2={checked2}
               selectedOptionCar={selectedOptionCar}
               selectedYear={selectedYear}
               sum={sum}
+              monthPayment={calculatePayment(sum, 0.29, selectedYear)}
             />
           );
         }
@@ -171,10 +183,10 @@ export const App = () => {
               <FourthStepCar
                 carState={carState}
                 checked={checked}
-                checked2={checked2}
                 selectedOptionCar={selectedOptionCar}
                 selectedYear={selectedYear}
                 sum={sum}
+                monthPayment={calculatePayment(sum, 0.29, selectedYear)}
               />
             );
           }
@@ -203,6 +215,9 @@ export const App = () => {
               selectedYear={selectedYear}
               setYear={setYear}
               sum={sum}
+              max={500_000}
+              min={30_000}
+              setSum={setSum}
             />
           );
         }
@@ -216,28 +231,41 @@ export const App = () => {
                 selectedYear={selectedYear}
                 setYear={setYear}
                 sum={sum}
+                max={1_000_000}
+                min={500_000}
+                setSum={setSum}
               />
             );
           }
 
-          return <FourthStepCash checked={checked} checked2={checked2} setChecked={setChecked} setChecked2={setChecked2} />;
+          return (
+            <FourthStepCash
+              checked={checked}
+              setChecked={setChecked}
+              monthPayment={calculatePayment(sum, 0.34, selectedYear)}
+            />
+          );
         }
         case 4: {
           if (deposit === 'Под залог') {
             return (
-              <FourthStepCash checked={checked} checked2={checked2} setChecked={setChecked} setChecked2={setChecked2} />
+              <FourthStepCash
+                checked={checked}
+                setChecked={setChecked}
+                monthPayment={calculatePayment(sum, 0.25, selectedYear)}
+              />
             );
           }
 
           return (
             <FifthStepCash
               checked={checked}
-              checked2={checked2}
               deposit={deposit}
               depositOption={depositOption}
               selectedOption={selectedOption}
               selectedYear={selectedYear}
               sum={sum}
+              monthPayment={calculatePayment(sum, 0.34, selectedYear)}
             />
           );
         }
@@ -247,12 +275,12 @@ export const App = () => {
             return (
               <FifthStepCash
                 checked={checked}
-                checked2={checked2}
                 deposit={deposit}
                 depositOption={depositOption}
                 selectedOption={selectedOption}
                 selectedYear={selectedYear}
                 sum={sum}
+                monthPayment={calculatePayment(sum, 0.25, selectedYear)}
               />
             );
           }
