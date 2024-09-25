@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 import { calculatePayment } from './calc';
 import { carOptions, options } from './constants';
 import { LS, LSKeys } from './ls';
-import { FirstStepCar, FourthStepCar, SecondStepCar, SecondStepCarType, ThirdStepCar } from './StepsCar';
-import { FifthStepCash, FirstStepCash, FourthStepCash, SecondStepCashDeposit, ThridStepCash } from './StepsCash';
+import { FirstStepCar, SecondStepCar, SecondStepCarType, ThirdStepCar } from './StepsCar';
+import { FirstStepCash, FourthStepCash, SecondStepCashDeposit, ThridStepCash } from './StepsCash';
 import { appSt } from './style.css';
 import { ThxLayout } from './thx/ThxLayout';
 import { sendDataToGA } from './utils/events';
@@ -26,7 +26,6 @@ export const App = () => {
   const [depositOption, setDepositOption] = useState<'Автомобиль' | 'Квартира' | ''>('');
   const [sum, setSum] = useState(500_000);
   const [loading, setLoading] = useState(false);
-  const [checked, setChecked] = useState(false);
   const [selectedYear, setYear] = useState(1);
   const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
 
@@ -39,7 +38,6 @@ export const App = () => {
     setDeposit('Без залога');
     setDepositOption('');
     setSum(500_000);
-    setChecked(false);
     setYear(3);
   }, [flow]);
 
@@ -50,10 +48,10 @@ export const App = () => {
 
   const titleBtn =
     deposit === 'Под залог' || carState === 'Новый'
-      ? steps === 5
+      ? steps === 4
         ? 'Продолжить'
         : 'Следущий шаг'
-      : steps === 4
+      : steps === 3
       ? 'Продолжить'
       : 'Следущий шаг';
 
@@ -67,14 +65,14 @@ export const App = () => {
   const goNext = () => {
     switch (flow) {
       case 'cash_credit':
-        if ((steps === 4 && deposit === 'Без залога') || (steps === 5 && deposit === 'Под залог')) {
+        if ((steps === 3 && deposit === 'Без залога') || (steps === 4 && deposit === 'Под залог')) {
           submit();
           return;
         }
         break;
 
       case 'car_credit':
-        if ((steps === 4 && carState === 'Подержанный') || (steps === 5 && carState === 'Новый')) {
+        if ((steps === 3 && carState === 'Подержанный') || (steps === 4 && carState === 'Новый')) {
           submit();
           return;
         }
@@ -91,7 +89,6 @@ export const App = () => {
     sendDataToGA({
       credit_period: selectedYear,
       credit_sum: sum,
-      is_insurance: Number(checked) as 1 | 0,
       auto_brand: carType,
       auto_credit_goal: isCash ? '' : selectedOptionCar,
       auto_type: isCash ? '' : carState,
@@ -149,8 +146,10 @@ export const App = () => {
           }
           return (
             <ThirdStepCar
-              checked={checked}
-              setChecked={setChecked}
+              carState={carState}
+              selectedOptionCar={selectedOptionCar}
+              selectedYear={selectedYear}
+              sum={sum}
               monthPayment={calculatePayment(sum, 0.29, selectedYear)}
             />
           );
@@ -160,29 +159,7 @@ export const App = () => {
           if (carState === 'Новый') {
             return (
               <ThirdStepCar
-                checked={checked}
-                setChecked={setChecked}
-                monthPayment={calculatePayment(sum, 0.29, selectedYear)}
-              />
-            );
-          }
-          return (
-            <FourthStepCar
-              carState={carState}
-              checked={checked}
-              selectedOptionCar={selectedOptionCar}
-              selectedYear={selectedYear}
-              sum={sum}
-              monthPayment={calculatePayment(sum, 0.29, selectedYear)}
-            />
-          );
-        }
-        case 5: {
-          if (carState === 'Новый') {
-            return (
-              <FourthStepCar
                 carState={carState}
-                checked={checked}
                 selectedOptionCar={selectedOptionCar}
                 selectedYear={selectedYear}
                 sum={sum}
@@ -240,26 +217,6 @@ export const App = () => {
 
           return (
             <FourthStepCash
-              checked={checked}
-              setChecked={setChecked}
-              monthPayment={calculatePayment(sum, 0.34, selectedYear)}
-            />
-          );
-        }
-        case 4: {
-          if (deposit === 'Под залог') {
-            return (
-              <FourthStepCash
-                checked={checked}
-                setChecked={setChecked}
-                monthPayment={calculatePayment(sum, 0.25, selectedYear)}
-              />
-            );
-          }
-
-          return (
-            <FifthStepCash
-              checked={checked}
               deposit={deposit}
               depositOption={depositOption}
               selectedOption={selectedOption}
@@ -269,12 +226,10 @@ export const App = () => {
             />
           );
         }
-
-        case 5: {
+        case 4: {
           if (deposit === 'Под залог') {
             return (
-              <FifthStepCash
-                checked={checked}
+              <FourthStepCash
                 deposit={deposit}
                 depositOption={depositOption}
                 selectedOption={selectedOption}
@@ -284,6 +239,7 @@ export const App = () => {
               />
             );
           }
+
           return null;
         }
 
@@ -331,7 +287,7 @@ export const App = () => {
                 {titleBtn}
               </Typography.TitleResponsive>
               <Typography.Text view="primary-medium" defaultMargins={false}>
-                {steps} из {deposit === 'Под залог' || carState === 'Новый' ? 5 : 4}
+                {steps} из {deposit === 'Под залог' || carState === 'Новый' ? 4 : 3}
               </Typography.Text>
             </div>
 

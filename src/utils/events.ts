@@ -7,7 +7,6 @@ declare global {
 type Payload = {
   credit_sum: number;
   credit_period: number;
-  is_insurance: 1 | 0;
   credit_type: string;
   cash_credit_goal: string;
   auto_credit_goal: string;

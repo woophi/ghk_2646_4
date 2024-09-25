@@ -1,6 +1,5 @@
 import { CDNIcon } from '@alfalab/core-components/cdn-icon';
 import { Input, InputProps } from '@alfalab/core-components/input';
-import { Switch } from '@alfalab/core-components/switch';
 import { Typography } from '@alfalab/core-components/typography';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { imgs, options, years } from './constants';
@@ -158,64 +157,15 @@ export const ThridStepCash = ({
 };
 
 export const FourthStepCash = ({
-  checked,
-  setChecked,
-  monthPayment,
-}: {
-  checked: boolean;
-  setChecked: (c: boolean) => void;
-  monthPayment: number;
-}) => {
-  return (
-    <>
-      <div className={appSt.container}>
-        <Typography.Title style={{ textAlign: 'center' }} tag="h1" view="medium" font="system" weight="bold">
-          Доп. услуги
-        </Typography.Title>
-        <div style={{ height: '294px' }} />
-      </div>
-      <div className={`${appSt.container} ${appSt.bottomFix}`}>
-        <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-          Дополнительные услуги уменьшат платеж
-        </Typography.Text>
-        <div className={appSt.row}>
-          <Switch
-            block
-            reversed
-            checked={checked}
-            label="Страховка"
-            className={appSt.switchItem}
-            onChange={() => setChecked(!checked)}
-          />
-        </div>
-        <div className={appSt.moneyBox}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography.Text style={{ fontWeight: 600 }} view="primary-medium">
-              {monthPayment.toLocaleString('ru')} ₽
-            </Typography.Text>
-            <Typography.Text style={{ textAlign: 'center' }} view="component-secondary" color="secondary">
-              Без доп. услуг
-            </Typography.Text>
-          </div>
-          <Typography.Text view="primary-medium">платеж в месяц</Typography.Text>
-        </div>
-      </div>
-    </>
-  );
-};
-
-export const FifthStepCash = ({
   deposit,
   depositOption,
   selectedOption,
-  checked,
   selectedYear,
   sum,
   monthPayment,
 }: {
   selectedYear: number;
   sum: number;
-  checked: boolean;
   selectedOption: string;
   deposit: 'Без залога' | 'Под залог';
   depositOption: 'Автомобиль' | 'Квартира' | '';
@@ -240,7 +190,6 @@ export const FifthStepCash = ({
           </div>
           <div className={appSt.tag}>На {getYearString(selectedYear)}</div>
           <div className={appSt.tag}>{sum.toLocaleString('ru')} ₽</div>
-          {checked && <div className={appSt.tag}>Страховка</div>}
         </div>
         <div className={appSt.moneyBox}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
