@@ -27,7 +27,7 @@ export const App = () => {
   const [sum, setSum] = useState(500_000);
   const [loading, setLoading] = useState(false);
   const [selectedYear, setYear] = useState(1);
-  const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
+  const [thxShow] = useState(LS.getItem(LSKeys.ShowThx, false));
 
   useEffect(() => {
     setOptionCar(carOptions[0]);
@@ -97,8 +97,13 @@ export const App = () => {
       zalog_type: isCash ? depositOption : '0',
     }).then(() => {
       LS.setItem(LSKeys.ShowThx, true);
-      setThx(true);
-      setLoading(false);
+      window.location.replace(
+        isCash && deposit === 'Под залог'
+          ? 'https://alfa.me/Fns0ch'
+          : isCash
+          ? 'https://alfa.me/p0r7na'
+          : 'https://alfa.me/auto',
+      );
     });
   };
 
